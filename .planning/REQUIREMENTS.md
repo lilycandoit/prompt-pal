@@ -75,30 +75,30 @@ Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | — | Pending |
-| FOUND-02 | — | Pending |
-| FOUND-03 | — | Pending |
-| FOUND-04 | — | Pending |
-| POP-01 | — | Pending |
-| POP-02 | — | Pending |
-| POP-03 | — | Pending |
-| POP-04 | — | Pending |
-| OPT-01 | — | Pending |
-| OPT-02 | — | Pending |
-| OPT-03 | — | Pending |
-| INJ-01 | — | Pending |
-| INJ-02 | — | Pending |
-| INJ-03 | — | Pending |
-| INJ-04 | — | Pending |
-| SYNC-01 | — | Pending |
-| SYNC-02 | — | Pending |
-| SYNC-03 | — | Pending |
+| FOUND-01 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Pending |
+| FOUND-03 | Phase 1 | Pending |
+| FOUND-04 | Phase 1 | Pending |
+| OPT-01 | Phase 1 | Pending |
+| OPT-02 | Phase 1 | Pending |
+| OPT-03 | Phase 1 | Pending |
+| POP-01 | Phase 2 | Pending |
+| POP-02 | Phase 2 | Pending |
+| POP-03 | Phase 2 | Pending |
+| POP-04 | Phase 2 | Pending |
+| INJ-01 | Phase 3 | Pending |
+| INJ-02 | Phase 3 | Pending |
+| INJ-03 | Phase 3 | Pending |
+| INJ-04 | Phase 3 | Pending |
+| SYNC-01 | Phase 4 | Pending |
+| SYNC-02 | Phase 4 | Pending |
+| SYNC-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 18 total
-- Mapped to phases: 0 (updated after roadmap)
-- Unmapped: 18 ⚠️
+- Mapped to phases: 18 (100%)
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-30*
-*Last updated: 2026-04-30 after initial definition*
+*Last updated: 2026-04-30 after roadmap creation*
