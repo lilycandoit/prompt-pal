@@ -6,7 +6,7 @@
 <domain>
 ## Phase Boundary
 
-Build the data layer and options page CRUD so every other phase has real, persistent data to work with. Deliverables: chrome.storage.local schema, first-install sample prompt seed, and a split-panel options page (list + create/edit/delete form). No search, no popup, no injection — those are Phase 2 and 3.
+Build the data layer and options page CRUD so every other phase has real, persistent data to work with. Deliverables: chrome.storage.local schema, first-install sample prompt seed, a split-panel options page (list + create/edit/delete form), shared CSS, and shared utility files. No search, no popup, no injection — those are Phase 2 and 3.
 
 </domain>
 
@@ -32,6 +32,32 @@ Build the data layer and options page CRUD so every other phase has real, persis
 ### Delete UX
 - **D-11:** Inline two-step confirmation. First click on `[Delete]` changes the button label/style to `[Are you sure?]`. Second click on the same button confirms deletion. Clicking anywhere else resets the button to `[Delete]`. No browser `confirm()` dialog.
 
+### File Structure (auto-selected)
+- **D-12:** Minimal nested layout. Shared JS utilities in `utils/`, sample data in `prompts/`, Phase 3 content scripts reserved in `content/`. Everything else (manifest, background, options) at project root. No `js/` or `css/` top-level folders — too many levels for a small extension.
+  ```
+  /
+  ├── manifest.json
+  ├── background.js
+  ├── options.html
+  ├── options.js
+  ├── styles/
+  │   └── main.css          ← shared styles (options + popup reuse this)
+  ├── utils/
+  │   └── frontmatter.js    ← shared parser
+  ├── prompts/
+  │   └── sample-prompts.js ← SAMPLE_PROMPTS global
+  └── content/              ← reserved for Phase 3
+  ```
+
+### Visual Style (auto-selected)
+- **D-13:** Clean light theme — white/light-gray background, dark text, single blue accent for buttons and selected states. Shared `styles/main.css` is created in Phase 1 and imported by both the options page and popup (Phase 2). Keeps the extension looking consistent without a framework.
+
+### Frontmatter Parser Placement (auto-selected)
+- **D-14:** Parser lives in `utils/frontmatter.js` as a plain global function (`parseFrontmatter(text)`). Loaded via `<script>` tag in any page that needs it. Both the options page (import preview — Phase 1 success criterion #4) and GitHub sync (Phase 4) consume it from the same file.
+
+### Manifest Permissions (auto-selected)
+- **D-15:** Declare all v1 permissions upfront in `manifest.json`: `storage`, `activeTab`, `scripting`. Users see one install prompt. No mid-use permission upgrades needed across all 4 phases. Content script `matches` covers `chat.openai.com`, `claude.ai`, and `gemini.google.com`.
+
 </decisions>
 
 <canonical_refs>
@@ -55,11 +81,13 @@ Build the data layer and options page CRUD so every other phase has real, persis
 - None — codebase does not exist yet. Phase 1 creates the initial file structure from scratch.
 
 ### Established Patterns
-- None yet. Phase 1 establishes the patterns that later phases follow.
+- None yet. Phase 1 establishes the patterns that later phases follow (file structure, storage API usage, shared CSS, global utility loading via script tags).
 
 ### Integration Points
 - `prompts/sample-prompts.js` → loaded as a global before `background.js` via `manifest.json` `background.scripts` order
 - `chrome.storage.local` → the single shared data store for popup (Phase 2), options page (Phase 1), and any future sync logic (Phase 4)
+- `utils/frontmatter.js` → shared by options page import preview (Phase 1) and GitHub sync (Phase 4)
+- `styles/main.css` → shared by options page (Phase 1) and popup (Phase 2)
 
 </code_context>
 
@@ -68,6 +96,7 @@ Build the data layer and options page CRUD so every other phase has real, persis
 
 - The split-panel layout mockup from discussion: list left (`[+ New]` at top, prompt titles below), form right (Title, Category, Body fields + `[Save]` and `[Delete → Are you sure?]` buttons).
 - Sample prompts should feel like something the target audience would bookmark — e.g., "Explain this error to me like I'm a junior developer. What caused it and how do I fix it?" over anything academic or template-heavy.
+- `parseFrontmatter(text)` signature: takes raw file text, returns `{ title, category, body }`. Returns `null` or throws on malformed input.
 
 </specifics>
 
