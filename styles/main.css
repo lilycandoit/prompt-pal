@@ -1,0 +1,253 @@
+/* Prompt Pal — Shared Stylesheet */
+/* Used by options.html (Phase 1) and popup.html (Phase 2) */
+
+:root {
+  /* Colors */
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f3f4f6;
+  --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-text-muted: #6b7280;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-destructive: #dc2626;
+  --color-destructive-hover: #b91c1c;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Typography */
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --text-display: 22px;
+  --text-heading: 18px;
+  --text-body: 14px;
+  --text-label: 12px;
+}
+
+/* Base reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+/* Options page layout */
+.options-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+.options-title {
+  font-size: var(--text-display);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: var(--space-lg);
+}
+
+/* Split panel */
+.panels {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  min-height: 500px;
+}
+
+.panel-list {
+  flex-shrink: 0;
+  min-width: 240px;
+  max-width: 320px;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-surface-secondary);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.panel-form {
+  flex: 1;
+  padding: var(--space-lg);
+}
+
+/* Panel headings */
+.panel-heading {
+  font-size: var(--text-heading);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: var(--space-md);
+}
+
+/* Prompt list */
+.prompt-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.prompt-list__item {
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  background: var(--color-surface);
+  font-size: var(--text-body);
+  border-left: 3px solid transparent;
+  transition: background 0.1s;
+}
+
+.prompt-list__item:hover {
+  background: var(--color-surface-secondary);
+}
+
+.prompt-list__item--active {
+  border-left: 3px solid var(--color-accent);
+  background: #eff6ff;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.empty-state__heading {
+  font-size: var(--text-heading);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+.empty-state__body {
+  font-size: var(--text-body);
+}
+
+/* Form */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.form-group label {
+  font-size: var(--text-label);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.form-group input,
+.form-group textarea {
+  font-family: var(--font-family);
+  font-size: var(--text-body);
+  color: var(--color-text);
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: var(--space-sm);
+  width: 100%;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 0;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.form-group textarea {
+  min-height: 160px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Buttons */
+.btn {
+  font-family: var(--font-family);
+  font-size: var(--text-body);
+  font-weight: 400;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.1s;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: #ffffff;
+  border: none;
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background: var(--color-surface-secondary);
+}
+
+.btn--destructive {
+  background: var(--color-destructive);
+  color: #ffffff;
+  border: none;
+}
+
+.btn--destructive:hover:not(:disabled) {
+  background: var(--color-destructive-hover);
+}
+
+/* Form actions row */
+.form-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  align-items: center;
+}
+
+/* New prompt button in list panel */
+.btn--new {
+  width: 100%;
+  background: var(--color-accent);
+  color: #ffffff;
+  border: none;
+  margin-bottom: var(--space-sm);
+}
+
+.btn--new:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+}

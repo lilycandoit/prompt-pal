@@ -1,0 +1,7 @@
+# Planning docs — only core docs are tracked
+.planning/
+.planning/research/
+.planning/plans/
+.planning/STATE.md
+.planning/intel/
+CLAUDE.md
