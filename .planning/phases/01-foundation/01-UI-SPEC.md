@@ -62,10 +62,9 @@ All sizes below are expressed as CSS custom properties.
 | Body | 14px | `--text-body` | 400 | 1.5 | Prompt list items, form field values, general text |
 | Label | 12px | `--text-label` | 600 | 1.4 | Form field labels (`<label>`), category badge |
 | Heading | 18px | `--text-heading` | 600 | 1.3 | Panel headings ("Prompts", "Edit Prompt") |
-| Display | 22px | `--text-display` | 700 | 1.2 | Page title ("Prompt Pal — Options") |
+| Display | 22px | `--text-display` | 600 | 1.2 | Page title ("Prompt Pal — Options") |
 
-**Declared weights: 400 (regular) and 600 (semibold/bold)**. 700 is used only for the single
-page-title element; treat as an exception, not a third weight tier.
+**Declared weights: 400 (regular) and 600 (semibold/bold).**
 
 ---
 
@@ -86,7 +85,7 @@ Expressed as CSS custom properties in `styles/main.css`. Source: CONTEXT.md D-13
 | Destructive hover | `#b91c1c` | `--color-destructive-hover` | Destructive button hover state only |
 
 **Accent reserved for (explicit list):**
-1. The `[Save]` button (primary action) — background fill
+1. The `[Save Prompt]` button (primary action) — background fill
 2. The `[+ New]` button — background fill
 3. The selected/active list item highlight — left border stripe (3px) + light tint background (`#eff6ff`)
 4. Focused input ring (`outline: 2px solid var(--color-accent)`)
@@ -112,7 +111,7 @@ Source: CONTEXT.md D-05, D-06, D-08 + specifics mockup.
 │  [+ New]            │  [Category field]                     │
 │  ─────────          │  [Body textarea]                      │
 │  Prompt title 1  ●  │                                       │
-│  Prompt title 2     │  [Save]          [Delete]             │
+│  Prompt title 2     │  [Save Prompt]          [Delete]      │
 │  Prompt title 3     │                                       │
 │  ...                │                                       │
 └─────────────────────┴───────────────────────────────────────┘
@@ -143,7 +142,7 @@ Source: CONTEXT.md D-05, D-06, D-08 + specifics mockup.
 | Button | Default | Hover | Disabled |
 |--------|---------|-------|----------|
 | `[+ New]` | `background: var(--color-accent)`, white text, 6px border-radius | `var(--color-accent-hover)` | `opacity: 0.5; cursor: not-allowed` |
-| `[Save]` | `background: var(--color-accent)`, white text, 6px border-radius | `var(--color-accent-hover)` | `opacity: 0.5; cursor: not-allowed` |
+| `[Save Prompt]` | `background: var(--color-accent)`, white text, 6px border-radius | `var(--color-accent-hover)` | `opacity: 0.5; cursor: not-allowed` |
 | `[Delete]` (default) | `background: transparent`, `border: 1px solid var(--color-border)`, muted text | `background: var(--color-surface-secondary)` | — |
 | `[Are you sure?]` (armed) | `background: var(--color-destructive)`, white text | `var(--color-destructive-hover)` | — |
 
@@ -181,7 +180,7 @@ Source: CONTEXT.md D-06, D-09, D-10, D-11; REQUIREMENTS.md OPT-01–03.
 | Left panel heading | "Prompts" |
 | Right panel heading (new) | "New Prompt" |
 | Right panel heading (editing) | "Edit Prompt" |
-| Primary CTA | "Save" (not "Save Prompt", not "Submit") |
+| Primary CTA | "Save Prompt" |
 | New prompt button | "+ New" |
 | Delete button (default) | "Delete" |
 | Delete button (armed/confirmation) | "Are you sure?" |
