@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prompt Pal</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body class="popup-page">
+
+  <div class="popup-header">
+    <input
+      type="search"
+      id="search"
+      class="popup-search"
+      placeholder="Search prompts..."
+      autocomplete="off"
+      spellcheck="false"
+    >
+    <select id="category-filter" class="popup-filter" aria-label="Filter by category">
+      <option value="">All categories</option>
+    </select>
+  </div>
+
+  <div id="error-banner" class="popup-error" hidden></div>
+
+  <ul id="prompt-list" class="popup-list" role="list"></ul>
+
+  <div id="empty-msg" class="popup-empty" hidden></div>
+
+  <div class="popup-footer">
+    <button type="button" id="btn-options" class="popup-options-link">Manage prompts →</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
