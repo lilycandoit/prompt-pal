@@ -107,56 +107,69 @@ body {
 .prompt-list__category {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
-  font-size: var(--text-label);
-  font-weight: 700;
+  gap: var(--space-sm);
+  padding: 10px var(--space-md);
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text);
+  letter-spacing: 0.07em;
+  color: var(--color-text-muted);
   background: var(--color-surface-secondary);
+  border-left: 3px solid transparent;
   border-bottom: 1px solid var(--color-border);
   cursor: pointer;
   user-select: none;
   list-style: none;
+  transition: color 0.1s, border-color 0.1s, background 0.1s;
 }
 
 .prompt-list__category:hover {
-  background: #e5e7eb;
+  color: var(--color-text);
+  background: #e9eaec;
 }
 
+.prompt-list__category--open {
+  color: var(--color-accent);
+  border-left-color: var(--color-accent);
+  background: #eff6ff;
+}
+
+.prompt-list__category--open:hover {
+  background: #dbeafe;
+}
+
+/* Thin CSS chevron — inherits currentColor so it adapts to all states */
 .prompt-list__chevron {
   flex-shrink: 0;
-  width: 12px;
-  height: 12px;
-  border-right: 2px solid var(--color-text-muted);
-  border-bottom: 2px solid var(--color-text-muted);
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
   transform: rotate(-45deg);
   transition: transform 0.15s ease;
-  margin-right: 2px;
   position: relative;
   top: -1px;
 }
 
 .prompt-list__category--open .prompt-list__chevron {
   transform: rotate(45deg);
-  top: -3px;
+  top: -2px;
 }
 
 .prompt-list__count {
   margin-left: auto;
-  font-size: var(--text-label);
-  font-weight: 400;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--color-text-muted);
-  background: var(--color-border);
-  border-radius: 10px;
-  padding: 0 6px;
-  min-width: 20px;
-  text-align: center;
+}
+
+.prompt-list__category--open .prompt-list__count {
+  color: var(--color-accent);
+  opacity: 0.7;
 }
 
 .prompt-list__item {
-  padding: var(--space-sm) var(--space-md) var(--space-sm) calc(var(--space-md) + 12px);
+  padding: var(--space-sm) var(--space-md) var(--space-sm) calc(var(--space-md) + 14px);
   cursor: pointer;
   background: var(--color-surface);
   font-size: var(--text-body);
