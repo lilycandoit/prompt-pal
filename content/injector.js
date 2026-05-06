@@ -3,22 +3,42 @@
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function injectChatGPT(text) {
-  const selectors = [
-    '#prompt-textarea',
-    'textarea[data-id="root"]',
-    'textarea[placeholder]',
+  // New chatgpt.com UI uses a contenteditable div, not a textarea.
+  const contentSelectors = [
+    '#prompt-input div[contenteditable="true"]',
+    'div[contenteditable="true"][data-placeholder]',
+    'div[contenteditable="true"][role="textbox"]',
+    'div.ProseMirror[contenteditable="true"]',
   ];
 
-  const el = selectors.reduce((found, sel) => found || document.querySelector(sel), null);
-  if (!el) return { success: false, error: 'Could not find the ChatGPT input. Try refreshing the page.' };
+  const contentEl = contentSelectors.reduce((found, sel) => found || document.querySelector(sel), null);
+  if (contentEl) {
+    contentEl.focus();
+    contentEl.textContent = text;
+    contentEl.dispatchEvent(new InputEvent('input', { inputType: 'insertText', data: text, bubbles: true }));
+    return { success: true };
+  }
 
-  // React controls this textarea via fiber — must use the native setter to
-  // trigger React's synthetic event system, otherwise Send stays disabled.
-  const nativeSetter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
-  nativeSetter.call(el, text);
-  el.dispatchEvent(new Event('input', { bubbles: true }));
-  el.focus();
-  return { success: true };
+  // Fallback: older chat.openai.com textarea interface.
+  const textareaSelectors = [
+    '#prompt-textarea',
+    'textarea[data-id="root"]',
+  ];
+
+  const textareaEl = textareaSelectors.reduce((found, sel) => found || document.querySelector(sel), null);
+  if (textareaEl) {
+    // React controls this textarea via fiber — native setter bypasses React's
+    // synthetic event system so the Send button activates correctly.
+    const nativeSetter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+    if (nativeSetter) {
+      nativeSetter.call(textareaEl, text);
+      textareaEl.dispatchEvent(new Event('input', { bubbles: true }));
+      textareaEl.focus();
+      return { success: true };
+    }
+  }
+
+  return { success: false, error: 'Could not find the ChatGPT input. Try refreshing the page.' };
 }
 
 function injectClaude(text) {
