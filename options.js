@@ -231,7 +231,8 @@ async function handleFileImport() {
 
   await Promise.all(files.map(async (file) => {
     const text = await file.text();
-    const results = parseMultiFrontmatter(text);
+    const ext = file.name.split('.').pop().toLowerCase();
+    const results = ext === 'csv' ? parseCSVPrompts(text) : parseMultiFrontmatter(text);
     if (results.length === 0) {
       errors.push(file.name + ': no valid prompts found');
       return;

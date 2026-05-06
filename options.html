@@ -76,8 +76,10 @@
       <div class="import-track">
         <h3 class="import-track__heading">From a file</h3>
         <p class="import-track__desc">
-          Import one or more <code>.md</code> files using the
-          <a href="template.md" download class="link">prompt template</a>.
+          Import <code>.md</code> or <code>.csv</code> files.
+          Download a template:
+          <a href="template.csv" download class="link">spreadsheet (.csv)</a> &nbsp;·&nbsp;
+          <a href="template.md" download class="link">markdown (.md)</a>.
         </p>
         <div class="import-actions">
           <button type="button" class="btn btn--secondary" id="btn-import-file">
@@ -86,7 +88,7 @@
           <input
             type="file"
             id="file-input"
-            accept=".md"
+            accept=".md,.csv"
             multiple
             hidden
             aria-hidden="true"
@@ -115,6 +117,7 @@
   </div>
 
   <script src="utils/frontmatter.js"></script>
+  <script src="utils/csv.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

@@ -1,0 +1,4 @@
+title,category,body
+Fix My Code,Coding,"Please review this code and fix any bugs. Explain what was wrong and why the fix works."
+Explain Like I'm 5,Learning,"Explain this concept in very simple terms, as if I have never heard of it before."
+Write a Unit Test,Coding,"Write a unit test for the function I paste below. Cover the happy path and at least two edge cases."
