@@ -15,6 +15,7 @@
   "content_scripts": [
     {
       "matches": [
+        "https://chatgpt.com/*",
         "https://chat.openai.com/*",
         "https://claude.ai/*",
         "https://gemini.google.com/*"
@@ -27,6 +28,7 @@
     {
       "resources": ["content/injector.js"],
       "matches": [
+        "https://chatgpt.com/*",
         "https://chat.openai.com/*",
         "https://claude.ai/*",
         "https://gemini.google.com/*"

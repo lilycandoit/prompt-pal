@@ -66,7 +66,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     const host = window.location.hostname;
     let result;
 
-    if (host.includes('chat.openai.com')) {
+    if (host.includes('chatgpt.com') || host.includes('chat.openai.com')) {
       result = injectChatGPT(message.text);
     } else if (host.includes('claude.ai')) {
       result = injectClaude(message.text);
