@@ -68,9 +68,54 @@
         </form>
       </main>
     </div>
+
+    <section class="import-section">
+      <h2 class="panel-heading">Import Prompts</h2>
+
+      <!-- Track A: File import -->
+      <div class="import-track">
+        <h3 class="import-track__heading">From a file</h3>
+        <p class="import-track__desc">
+          Import one or more <code>.md</code> files using the
+          <a href="template.md" download class="link">prompt template</a>.
+        </p>
+        <div class="import-actions">
+          <button type="button" class="btn btn--secondary" id="btn-import-file">
+            Import from file
+          </button>
+          <input
+            type="file"
+            id="file-input"
+            accept=".md"
+            multiple
+            hidden
+            aria-hidden="true"
+          >
+        </div>
+        <p class="import-status" id="file-status" hidden></p>
+      </div>
+
+      <!-- Track B: GitHub sync -->
+      <div class="import-track">
+        <h3 class="import-track__heading">From GitHub</h3>
+        <p class="import-track__desc">Paste a public GitHub repo URL to sync all <code>.md</code> prompts from its root folder.</p>
+        <div class="import-actions import-actions--row">
+          <input
+            type="url"
+            id="github-url"
+            class="input"
+            placeholder="https://github.com/owner/repo"
+            autocomplete="off"
+          >
+          <button type="button" class="btn btn--primary" id="btn-sync">Sync</button>
+        </div>
+        <p class="import-status" id="sync-status" hidden></p>
+      </div>
+    </section>
   </div>
 
   <script src="utils/frontmatter.js"></script>
   <script src="options.js"></script>
 </body>
 </html>
+

@@ -104,7 +104,7 @@
 | 1 | Foundation | 2/2 | Complete | 2026-05-04 |
 | 2 | Popup UI | 1/1 | Complete | 2026-05-06 |
 | 3 | Injection | 1/1 | Complete | 2026-05-06 |
-| 4 | Import & Sync | 0/? | Not started | — |
+| 4 | Import & Sync | 1/1 | Complete | 2026-05-06 |
 
 ---
 *Roadmap created: 2026-04-30*
