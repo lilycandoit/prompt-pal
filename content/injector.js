@@ -15,7 +15,12 @@ function injectChatGPT(text) {
   if (contentEl) {
     contentEl.focus();
     document.execCommand('selectAll', false, null);
-    document.execCommand('insertText', false, text);
+    document.execCommand('delete', false, null);
+    // Simulate a paste so ChatGPT's own handler processes newlines correctly.
+    // insertText collapses \n to spaces in ChatGPT's contenteditable.
+    const dt = new DataTransfer();
+    dt.setData('text/plain', text);
+    contentEl.dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true }));
     return { success: true };
   }
 
