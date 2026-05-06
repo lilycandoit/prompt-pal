@@ -3,6 +3,7 @@
 // ── State ──────────────────────────────────────────────────────────────────
 let allPrompts = [];      // in-memory mirror of chrome.storage.local prompts
 let selectedId = null;    // currently selected prompt ID (null = new prompt mode)
+let openCategory = null;  // which category accordion is currently expanded
 
 // ── DOM refs ───────────────────────────────────────────────────────────────
 const promptList  = document.getElementById('prompt-list');
@@ -54,7 +55,6 @@ function renderList() {
     promptList.removeChild(promptList.firstChild);
   }
 
-  // Group prompts by category, preserving insertion order within each group
   const groups = new Map();
   allPrompts.forEach((prompt) => {
     const cat = prompt.category || 'Uncategorized';
@@ -66,23 +66,47 @@ function renderList() {
   const sortedCategories = [...groups.keys()].sort((a, b) => a.localeCompare(b));
 
   sortedCategories.forEach((cat) => {
+    const isOpen = openCategory === cat;
+
+    // Category header row (always visible)
     const header = document.createElement('li');
-    header.className = 'prompt-list__category';
-    header.textContent = cat;
+    header.className = 'prompt-list__category' + (isOpen ? ' prompt-list__category--open' : '');
+
+    const chevron = document.createElement('span');
+    chevron.className = 'prompt-list__chevron';
+    chevron.setAttribute('aria-hidden', 'true');
+
+    const label = document.createElement('span');
+    label.textContent = cat;
+
+    const count = document.createElement('span');
+    count.className = 'prompt-list__count';
+    count.textContent = groups.get(cat).length;
+
+    header.appendChild(chevron);
+    header.appendChild(label);
+    header.appendChild(count);
+    header.addEventListener('click', () => {
+      openCategory = isOpen ? null : cat;
+      renderList();
+    });
     fragment.appendChild(header);
 
-    groups.get(cat).forEach((prompt) => {
-      const li = document.createElement('li');
-      li.className = 'prompt-list__item';
-      li.dataset.id = prompt.id;
-      li.textContent = prompt.title || '(untitled)';
-      if (prompt.id === selectedId) {
-        li.classList.add('prompt-list__item--active');
-        li.setAttribute('aria-current', 'true');
-      }
-      li.addEventListener('click', () => selectPrompt(prompt.id));
-      fragment.appendChild(li);
-    });
+    // Prompt items — only rendered when this category is open
+    if (isOpen) {
+      groups.get(cat).forEach((prompt) => {
+        const li = document.createElement('li');
+        li.className = 'prompt-list__item';
+        li.dataset.id = prompt.id;
+        li.textContent = prompt.title || '(untitled)';
+        if (prompt.id === selectedId) {
+          li.classList.add('prompt-list__item--active');
+          li.setAttribute('aria-current', 'true');
+        }
+        li.addEventListener('click', () => selectPrompt(prompt.id));
+        fragment.appendChild(li);
+      });
+    }
   });
 
   promptList.appendChild(fragment);
@@ -170,10 +194,10 @@ function bindEvents() {
       selectedId = newPrompt.id;
     }
 
+    openCategory = category || 'Uncategorized';
     savePrompts(() => {
       renderList();
       updateEmptyState();
-      // Update form heading to "Edit Prompt" and show delete button after save
       formHeading.textContent = 'Edit Prompt';
       btnDelete.hidden = false;
     });
