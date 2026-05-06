@@ -14,8 +14,8 @@ function injectChatGPT(text) {
   const contentEl = contentSelectors.reduce((found, sel) => found || document.querySelector(sel), null);
   if (contentEl) {
     contentEl.focus();
-    contentEl.textContent = text;
-    contentEl.dispatchEvent(new InputEvent('input', { inputType: 'insertText', data: text, bubbles: true }));
+    document.execCommand('selectAll', false, null);
+    document.execCommand('insertText', false, text);
     return { success: true };
   }
 
@@ -70,10 +70,8 @@ function injectGemini(text) {
   if (!el) return { success: false, error: 'Could not find the Gemini input. Try refreshing the page.' };
 
   el.focus();
-  // Set textContent so the DOM reflects the value, then fire the InputEvent
-  // that Gemini's framework uses to sync its internal state.
-  el.textContent = text;
-  el.dispatchEvent(new InputEvent('input', { inputType: 'insertText', data: text, bubbles: true }));
+  document.execCommand('selectAll', false, null);
+  document.execCommand('insertText', false, text);
   return { success: true };
 }
 
