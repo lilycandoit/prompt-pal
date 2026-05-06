@@ -33,3 +33,26 @@ function parseFrontmatter(text) {
 
   return { title, category, body };
 }
+
+/**
+ * parseMultiFrontmatter — extract multiple prompts from a single markdown string.
+ *
+ * Prompts are separated by a line containing only `===`. Each segment is parsed
+ * with parseFrontmatter(). Single-prompt files (no `===`) work identically to before.
+ *
+ * Returns an array of { title, category, body } objects. Empty array if nothing parses.
+ */
+function parseMultiFrontmatter(text) {
+  if (typeof text !== 'string') return [];
+  // Normalize CRLF so the split regex works on Windows line endings too
+  const normalized = text.replace(/\r\n/g, '\n');
+  const segments = normalized.split(/\n[ \t]*===[ \t]*\n/);
+  const results = [];
+  for (const segment of segments) {
+    const trimmed = segment.trim();
+    if (!trimmed) continue;
+    const parsed = parseFrontmatter(trimmed);
+    if (parsed) results.push(parsed);
+  }
+  return results;
+}

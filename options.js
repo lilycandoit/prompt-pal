@@ -231,17 +231,19 @@ async function handleFileImport() {
 
   await Promise.all(files.map(async (file) => {
     const text = await file.text();
-    const result = parseFrontmatter(text);
-    if (!result || !result.title) {
-      errors.push(file.name + ': missing or invalid frontmatter');
+    const results = parseMultiFrontmatter(text);
+    if (results.length === 0) {
+      errors.push(file.name + ': no valid prompts found');
       return;
     }
-    parsed.push({
-      id: crypto.randomUUID().slice(0, 8),
-      title: result.title,
-      category: result.category || '',
-      body: result.body || ''
-    });
+    for (const result of results) {
+      parsed.push({
+        id: crypto.randomUUID().slice(0, 8),
+        title: result.title,
+        category: result.category || '',
+        body: result.body || ''
+      });
+    }
   }));
 
   const added = dedupeAndAppend(parsed);
@@ -318,17 +320,19 @@ async function handleGitHubSync() {
           return;
         }
         const text = await fileRes.text();
-        const result = parseFrontmatter(text);
-        if (!result || !result.title) {
-          errors.push(item.name + ': missing or invalid frontmatter');
+        const results = parseMultiFrontmatter(text);
+        if (results.length === 0) {
+          errors.push(item.name + ': no valid prompts found');
           return;
         }
-        parsed.push({
-          id: crypto.randomUUID().slice(0, 8),
-          title: result.title,
-          category: result.category || '',
-          body: result.body || ''
-        });
+        for (const result of results) {
+          parsed.push({
+            id: crypto.randomUUID().slice(0, 8),
+            title: result.title,
+            category: result.category || '',
+            body: result.body || ''
+          });
+        }
       } catch (err) {
         errors.push(item.name + ': ' + err.message);
       }
