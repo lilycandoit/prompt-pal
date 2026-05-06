@@ -12,7 +12,7 @@ Prompts are stored locally with a built-in editor, and optionally synced from a 
 
 - Search and browse your prompt library from the browser popup
 - Click any prompt to inject it directly into the active chat input
-- Works on ChatGPT (`chat.openai.com`), Claude (`claude.ai`), and Gemini (`gemini.google.com`)
+- Works on ChatGPT (`chatgpt.com`), Claude (`claude.ai`), and Gemini (`gemini.google.com`)
 - Prompts stored in `chrome.storage.local` — works offline, no account needed
 - Built-in editor on the options page: add, edit, and delete prompts
 - Each prompt has a title, category, and body
@@ -78,7 +78,7 @@ I got this error and I'm not sure what it means. Can you explain what caused it 
 
 | Phase | Goal | Status |
 |-------|------|--------|
-| 1 — Foundation | Storage schema, options page CRUD, sample prompts | In progress |
-| 2 — Popup UI | Search, filter, keyboard nav, inject trigger | Not started |
-| 3 — Injection | Site-specific content scripts for Claude, ChatGPT, Gemini | Not started |
-| 4 — GitHub Sync | Import prompts from a public GitHub repo URL | Not started |
+| 1 — Foundation | Storage schema, options page CRUD, sample prompts | ✅ Complete |
+| 2 — Popup UI | Search, filter, keyboard nav, inject trigger | ✅ Complete |
+| 3 — Injection | Site-specific content scripts for Claude, ChatGPT, Gemini | ✅ Complete |
+| 4 — GitHub Sync | Import prompts from a public GitHub repo URL | In progress |
