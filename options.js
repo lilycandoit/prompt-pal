@@ -50,24 +50,39 @@ function savePrompts(cb) {
 
 // ── Rendering ──────────────────────────────────────────────────────────────
 function renderList() {
-  // Clear existing items
   while (promptList.firstChild) {
     promptList.removeChild(promptList.firstChild);
   }
 
-  const fragment = document.createDocumentFragment();
+  // Group prompts by category, preserving insertion order within each group
+  const groups = new Map();
   allPrompts.forEach((prompt) => {
-    const li = document.createElement('li');
-    li.className = 'prompt-list__item';
-    li.dataset.id = prompt.id;
-    // XSS-safe: textContent only
-    li.textContent = prompt.title || '(untitled)';
-    if (prompt.id === selectedId) {
-      li.classList.add('prompt-list__item--active');
-      li.setAttribute('aria-current', 'true');
-    }
-    li.addEventListener('click', () => selectPrompt(prompt.id));
-    fragment.appendChild(li);
+    const cat = prompt.category || 'Uncategorized';
+    if (!groups.has(cat)) groups.set(cat, []);
+    groups.get(cat).push(prompt);
+  });
+
+  const fragment = document.createDocumentFragment();
+  const sortedCategories = [...groups.keys()].sort((a, b) => a.localeCompare(b));
+
+  sortedCategories.forEach((cat) => {
+    const header = document.createElement('li');
+    header.className = 'prompt-list__category';
+    header.textContent = cat;
+    fragment.appendChild(header);
+
+    groups.get(cat).forEach((prompt) => {
+      const li = document.createElement('li');
+      li.className = 'prompt-list__item';
+      li.dataset.id = prompt.id;
+      li.textContent = prompt.title || '(untitled)';
+      if (prompt.id === selectedId) {
+        li.classList.add('prompt-list__item--active');
+        li.setAttribute('aria-current', 'true');
+      }
+      li.addEventListener('click', () => selectPrompt(prompt.id));
+      fragment.appendChild(li);
+    });
   });
 
   promptList.appendChild(fragment);

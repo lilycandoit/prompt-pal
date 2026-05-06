@@ -104,6 +104,23 @@ body {
   overflow-y: auto;
 }
 
+.prompt-list__category {
+  padding: var(--space-xs) var(--space-md);
+  margin-top: var(--space-sm);
+  font-size: var(--text-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  list-style: none;
+  cursor: default;
+  user-select: none;
+}
+
+.prompt-list__category:first-child {
+  margin-top: 0;
+}
+
 .prompt-list__item {
   padding: var(--space-sm) var(--space-md);
   cursor: pointer;
