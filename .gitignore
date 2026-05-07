@@ -5,3 +5,14 @@
 .planning/STATE.md
 .planning/intel/
 CLAUDE.md
+
+# Build & dependencies
+node_modules/
+package-lock.json
+package.json
+
+# macOS
+.DS_Store
+
+# Dev scripts
+generate-icons.js
