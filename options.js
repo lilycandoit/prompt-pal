@@ -1,9 +1,10 @@
 'use strict';
 
 // ── State ──────────────────────────────────────────────────────────────────
-let allPrompts = [];      // in-memory mirror of chrome.storage.local prompts
-let selectedId = null;    // currently selected prompt ID (null = new prompt mode)
-let openCategory = null;  // which category accordion is currently expanded
+let allPrompts = [];        // in-memory mirror of chrome.storage.local prompts
+let selectedId = null;      // currently selected prompt ID (null = new prompt mode)
+let openCategory = null;    // which category accordion is currently expanded
+let importInProgress = false;
 
 // ── DOM refs ───────────────────────────────────────────────────────────────
 const promptList  = document.getElementById('prompt-list');
@@ -259,46 +260,56 @@ function showStatus(el, message, type) {
   el.hidden = false;
 }
 
+function setImportBusy(busy) {
+  importInProgress = busy;
+  btnImportFile.disabled = busy;
+  btnSync.disabled = busy;
+}
+
 // ── Track A: File import ───────────────────────────────────────────────────
 
 async function handleFileImport() {
+  if (importInProgress) return;
   const files = Array.from(fileInput.files);
   if (files.length === 0) return;
 
+  setImportBusy(true);
   const parsed = [];
   const errors = [];
 
-  await Promise.all(files.map(async (file) => {
-    const text = await file.text();
-    const ext = file.name.split('.').pop().toLowerCase();
-    const results = ext === 'csv' ? parseCSVPrompts(text) : parseMultiFrontmatter(text);
-    if (results.length === 0) {
-      errors.push(file.name + ': no valid prompts found');
-      return;
-    }
-    for (const result of results) {
-      parsed.push({
-        id: crypto.randomUUID().slice(0, 8),
-        title: result.title,
-        category: result.category || '',
-        body: result.body || ''
-      });
-    }
-  }));
+  try {
+    await Promise.all(files.map(async (file) => {
+      const text = await file.text();
+      const ext = file.name.split('.').pop().toLowerCase();
+      const results = ext === 'csv' ? parseCSVPrompts(text) : parseMultiFrontmatter(text);
+      if (results.length === 0) {
+        errors.push(file.name + ': no valid prompts found');
+        return;
+      }
+      for (const result of results) {
+        parsed.push({
+          id: crypto.randomUUID().slice(0, 8),
+          title: result.title,
+          category: result.category || '',
+          body: result.body || ''
+        });
+      }
+    }));
 
-  const added = dedupeAndAppend(parsed);
-  savePrompts(() => {
-    renderList();
-    updateEmptyState();
-    let msg = added + ' prompt' + (added === 1 ? '' : 's') + ' imported.';
-    if (errors.length) msg += ' ' + errors.length + ' file' + (errors.length === 1 ? '' : 's') + ' skipped.';
-    const skipped = parsed.length - added;
-    if (skipped > 0) msg += ' ' + skipped + ' duplicate' + (skipped === 1 ? '' : 's') + ' skipped.';
-    showStatus(fileStatus, msg, 'success');
-  });
-
-  // Reset so the same file can be re-selected
-  fileInput.value = '';
+    const added = dedupeAndAppend(parsed);
+    savePrompts(() => {
+      renderList();
+      updateEmptyState();
+      let msg = added + ' prompt' + (added === 1 ? '' : 's') + ' imported.';
+      if (errors.length) msg += ' ' + errors.length + ' file' + (errors.length === 1 ? '' : 's') + ' skipped.';
+      const skipped = parsed.length - added;
+      if (skipped > 0) msg += ' ' + skipped + ' duplicate' + (skipped === 1 ? '' : 's') + ' skipped.';
+      showStatus(fileStatus, msg, 'success');
+    });
+  } finally {
+    setImportBusy(false);
+    fileInput.value = '';
+  }
 }
 
 // ── Track B: GitHub sync ───────────────────────────────────────────────────
@@ -324,7 +335,7 @@ async function handleGitHubSync() {
     return;
   }
 
-  btnSync.disabled = true;
+  setImportBusy(true);
   showStatus(syncStatus, 'Syncing…', 'success');
 
   try {
@@ -332,9 +343,17 @@ async function handleGitHubSync() {
       'https://api.github.com/repos/' + owner + '/' + repo + '/contents/'
     );
     if (!listRes.ok) {
-      const msg = listRes.status === 404
-        ? 'Repository not found. Make sure the URL is correct and the repo is public.'
-        : 'GitHub API error: ' + listRes.status;
+      let msg;
+      if (listRes.status === 403) {
+        const body = await listRes.json().catch(() => ({}));
+        msg = (body.message || '').toLowerCase().includes('rate limit')
+          ? 'GitHub rate limit reached. Try again in an hour.'
+          : 'GitHub API error: 403';
+      } else if (listRes.status === 404) {
+        msg = 'Repository not found. Make sure the URL is correct and the repo is public.';
+      } else {
+        msg = 'GitHub API error: ' + listRes.status;
+      }
       showStatus(syncStatus, msg, 'error');
       return;
     }
@@ -395,6 +414,6 @@ async function handleGitHubSync() {
   } catch (err) {
     showStatus(syncStatus, 'Network error: ' + err.message, 'error');
   } finally {
-    btnSync.disabled = false;
+    setImportBusy(false);
   }
 }
