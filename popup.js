@@ -11,6 +11,12 @@ const resultCount        = document.getElementById('result-count');
 const errorBanner        = document.getElementById('error-banner');
 const emptyMsg           = document.getElementById('empty-msg');
 const btnOptions         = document.getElementById('btn-options');
+const previewModal       = document.getElementById('preview-modal');
+const previewModalTitle  = document.getElementById('preview-modal-title');
+const previewModalBody   = document.getElementById('preview-modal-body');
+const previewModalClose  = document.getElementById('preview-modal-close');
+const previewModalBack   = document.getElementById('preview-modal-back');
+const previewModalInject = document.getElementById('preview-modal-inject');
 
 // ── State ──────────────────────────────────────────────────────────────────
 let allPrompts = [];
@@ -41,6 +47,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeFilterDropdown();
+  });
+
+  // Modal event listeners
+  previewModalClose.addEventListener('click', closePreviewModal);
+  previewModalBack.addEventListener('click', closePreviewModal);
+  previewModalInject.addEventListener('click', () => {
+    if (currentModalPrompt) {
+      const prompt = currentModalPrompt;
+      // Move focus to a visible element before hiding the modal so the popup
+      // stays open — then call the same injectPrompt used by direct list clicks.
+      searchInput.focus();
+      closePreviewModal();
+      injectPrompt(prompt);
+    }
+  });
+
+  // Close modal on backdrop click
+  previewModal.addEventListener('click', (e) => {
+    if (e.target === previewModal) closePreviewModal();
+  });
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !previewModal.hidden) {
+      closePreviewModal();
+    }
   });
 });
 
@@ -149,10 +181,40 @@ function renderList() {
     catEl.textContent = prompt.category || '';
 
     li.appendChild(titleEl);
-    if (bodyEl.textContent) li.appendChild(bodyEl);
-    li.appendChild(catEl);
+    if (bodyEl.textContent) {
+      li.appendChild(bodyEl);
 
-    li.addEventListener('click', () => injectPrompt(prompt));
+      // Add "Show more" link and category together
+      const footerEl = document.createElement('div');
+      footerEl.className = 'popup-list__footer';
+
+      const showMoreEl = document.createElement('span');
+      showMoreEl.className = 'popup-list__show-more';
+      showMoreEl.innerHTML = '<span class="popup-list__ellipsis">…</span><button type="button" class="popup-list__show-more-btn">Show more</button>';
+      footerEl.appendChild(showMoreEl);
+
+      if (catEl.textContent) {
+        footerEl.appendChild(catEl);
+      }
+
+      li.appendChild(footerEl);
+
+      // Attach prompt data for modal
+      li.dataset.promptBody = prompt.body;
+      li.dataset.promptTitle = prompt.title;
+    } else if (catEl.textContent) {
+      li.appendChild(catEl);
+    }
+
+    li.addEventListener('click', (e) => {
+      // If click is on "Show more" button, open modal instead of injecting
+      if (e.target.closest('.popup-list__show-more-btn')) {
+        e.stopPropagation();
+        openPreviewModal(prompt);
+      } else {
+        injectPrompt(prompt);
+      }
+    });
     li.addEventListener('keydown', (e) => onItemKeydown(e, prompt, idx));
     li.addEventListener('focus', () => setFocused(li));
     li.addEventListener('blur', () =>
@@ -224,7 +286,7 @@ function injectPrompt(prompt) {
       { type: 'INJECT_PROMPT', text: prompt.body },
       (response) => {
         if (chrome.runtime.lastError) {
-          showError('Could not connect to page. Try refreshing it.');
+          showError('Not available on this page. Try ChatGPT, Claude, or Gemini.');
           return;
         }
         if (response && response.success === false) {
@@ -237,30 +299,25 @@ function injectPrompt(prompt) {
   });
 }
 
+// ── Preview modal ──────────────────────────────────────────────────────────
+let currentModalPrompt = null;
+
+function openPreviewModal(prompt) {
+  currentModalPrompt = prompt;
+  previewModalTitle.textContent = prompt.title || '(untitled)';
+  previewModalBody.textContent = prompt.body || '';
+  previewModal.hidden = false;
+  previewModalInject.focus();
+}
+
+function closePreviewModal() {
+  previewModal.hidden = true;
+  currentModalPrompt = null;
+}
+
 // ── Success toast ──────────────────────────────────────────────────────────
 function showSuccessToast() {
-  // Create toast element
-  const toast = document.createElement('div');
-  toast.style.cssText = `
-    position: fixed;
-    bottom: 16px;
-    right: 16px;
-    background: #10b981;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    z-index: 9999;
-    pointer-events: none;
-  `;
-  toast.textContent = '✓ Prompt injected!';
-  document.body.appendChild(toast);
-
-  // Close popup after brief delay
-  setTimeout(() => {
-    window.close();
-  }, 150);
+  window.close();
 }
 
 // ── Empty / error state ────────────────────────────────────────────────────

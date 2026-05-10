@@ -14,10 +14,10 @@ function injectChatGPT(text) {
   const contentEl = contentSelectors.reduce((found, sel) => found || document.querySelector(sel), null);
   if (contentEl) {
     contentEl.focus();
-    document.execCommand('selectAll', false, null);
-    document.execCommand('delete', false, null);
-    // Simulate a paste so ChatGPT's own handler processes newlines correctly.
-    // insertText collapses \n to spaces in ChatGPT's contenteditable.
+    // Do NOT use execCommand('selectAll') before pasting — it is document-wide
+    // and corrupts React state across ChatGPT's multiple editable regions,
+    // causing the paste handler to run but not commit the update visually.
+    // The input is empty when a prompt is injected, so no clearing is needed.
     const dt = new DataTransfer();
     dt.setData('text/plain', text);
     contentEl.dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true }));

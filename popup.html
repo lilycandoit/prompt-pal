@@ -77,6 +77,26 @@
       hidden
     ></div>
 
+    <div id="preview-modal" class="popup-modal" hidden>
+      <div class="popup-modal__content">
+        <div class="popup-modal__header">
+          <h2 id="preview-modal-title" class="popup-modal__title"></h2>
+          <button type="button" id="preview-modal-close" class="popup-modal__close" title="Close" aria-label="Close preview">
+            ✕
+          </button>
+        </div>
+        <div id="preview-modal-body" class="popup-modal__body"></div>
+        <div class="popup-modal__footer">
+          <button type="button" id="preview-modal-back" class="popup-modal__btn popup-modal__btn--secondary">
+            Back
+          </button>
+          <button type="button" id="preview-modal-inject" class="popup-modal__btn popup-modal__btn--primary">
+            Inject
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="popup.js"></script>
   </body>
 </html>
