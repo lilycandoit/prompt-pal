@@ -1,17 +1,21 @@
 'use strict';
 
 // ── DOM refs ───────────────────────────────────────────────────────────────
-const searchInput = document.getElementById('search');
-const categoryFilter = document.getElementById('category-filter');
-const promptList = document.getElementById('prompt-list');
-const resultCount = document.getElementById('result-count');
-const errorBanner = document.getElementById('error-banner');
-const emptyMsg = document.getElementById('empty-msg');
-const btnOptions = document.getElementById('btn-options');
+const searchInput        = document.getElementById('search');
+const categoryFilterWrap = document.getElementById('category-filter-wrap');
+const categoryFilterBtn  = document.getElementById('category-filter-btn');
+const categoryFilterLbl  = document.getElementById('category-filter-label');
+const categoryFilterList = document.getElementById('category-filter-list');
+const promptList         = document.getElementById('prompt-list');
+const resultCount        = document.getElementById('result-count');
+const errorBanner        = document.getElementById('error-banner');
+const emptyMsg           = document.getElementById('empty-msg');
+const btnOptions         = document.getElementById('btn-options');
 
 // ── State ──────────────────────────────────────────────────────────────────
 let allPrompts = [];
 let filtered = [];
+let selectedCategory = '';
 
 // ── Boot ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,28 +27,68 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   searchInput.addEventListener('input', applyFilters);
-  categoryFilter.addEventListener('change', applyFilters);
   searchInput.addEventListener('keydown', onSearchKeydown);
   btnOptions.addEventListener('click', () => chrome.runtime.openOptionsPage());
+
+  categoryFilterBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    categoryFilterList.hidden ? openFilterDropdown() : closeFilterDropdown();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!categoryFilterWrap.contains(e.target)) closeFilterDropdown();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeFilterDropdown();
+  });
 });
 
-// ── Category select ────────────────────────────────────────────────────────
+// ── Category dropdown ──────────────────────────────────────────────────────
 function populateCategories() {
-  const cats = [
-    ...new Set(allPrompts.map((p) => p.category).filter(Boolean)),
-  ].sort();
-  cats.forEach((cat) => {
-    const opt = document.createElement('option');
-    opt.value = cat;
-    opt.textContent = cat;
-    categoryFilter.appendChild(opt);
+  const cats = [...new Set(allPrompts.map((p) => p.category).filter(Boolean))].sort();
+  while (categoryFilterList.firstChild) categoryFilterList.removeChild(categoryFilterList.firstChild);
+
+  [{ value: '', label: 'All categories' }, ...cats.map((c) => ({ value: c, label: c }))].forEach(
+    ({ value, label }) => {
+      const li = document.createElement('li');
+      li.className = 'popup-filter-option' + (value === selectedCategory ? ' popup-filter-option--selected' : '');
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', value === selectedCategory ? 'true' : 'false');
+      li.dataset.value = value;
+      li.textContent = label;
+      li.addEventListener('click', () => pickCategory(value, label));
+      categoryFilterList.appendChild(li);
+    }
+  );
+}
+
+function pickCategory(value, label) {
+  selectedCategory = value;
+  categoryFilterLbl.textContent = label;
+  categoryFilterList.querySelectorAll('.popup-filter-option').forEach((el) => {
+    const sel = el.dataset.value === value;
+    el.classList.toggle('popup-filter-option--selected', sel);
+    el.setAttribute('aria-selected', sel ? 'true' : 'false');
   });
+  closeFilterDropdown();
+  applyFilters();
+}
+
+function openFilterDropdown() {
+  categoryFilterList.hidden = false;
+  categoryFilterBtn.setAttribute('aria-expanded', 'true');
+}
+
+function closeFilterDropdown() {
+  categoryFilterList.hidden = true;
+  categoryFilterBtn.setAttribute('aria-expanded', 'false');
 }
 
 // ── Filtering ──────────────────────────────────────────────────────────────
 function applyFilters() {
   const query = searchInput.value.toLowerCase();
-  const cat = categoryFilter.value;
+  const cat = selectedCategory;
 
   filtered = allPrompts.filter((p) => {
     const matchesCat = !cat || p.category === cat;

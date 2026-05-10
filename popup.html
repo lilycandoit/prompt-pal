@@ -19,13 +19,25 @@
           autocomplete="off"
           spellcheck="false"
         />
-        <select
-          id="category-filter"
-          class="popup-filter"
-          aria-label="Filter by category"
-        >
-          <option value="">All categories</option>
-        </select>
+        <div class="popup-filter-wrap" id="category-filter-wrap">
+          <button
+            type="button"
+            class="popup-filter"
+            id="category-filter-btn"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-label="Filter by category"
+          >
+            <span id="category-filter-label">All categories</span>
+            <span class="popup-filter-arrow" aria-hidden="true"></span>
+          </button>
+          <ul
+            class="popup-filter-dropdown"
+            id="category-filter-list"
+            role="listbox"
+            hidden
+          ></ul>
+        </div>
         <button
           type="button"
           id="btn-options"
